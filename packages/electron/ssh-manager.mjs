@@ -496,7 +496,8 @@ export class ElectronSshManager {
   async runSshOutput(parsed, preDestinationArgs, remoteCommand = null) {
     return await new Promise((resolve, reject) => {
       const child = this.trackSshProcess(this.spawnProcess('ssh', buildSshArgs(parsed, preDestinationArgs, remoteCommand), {
-        stdio: ['pipe', 'pipe', 'pipe'],
+        // ssh.exe on Windows sometimes hung with an open stdin pipe. No setup command reads stdin.
+        stdio: ['ignore', 'pipe', 'pipe'],
         ...this.hiddenSpawnOptions(),
         env: this.authEnvironment(parsed),
       }), parsed);
